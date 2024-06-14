@@ -6,7 +6,7 @@ const URLSchema = new Schema({
   originalUrl: { type: String, required: true },
   shortUrl: { type: String, required: true },
   clickCount: { type: Number, default: 0 },
-  createdBy: { type: Number, ref: 'User' },
+  createdBy: { type: String, ref: 'User' },
   createdAt: { type: Date, default: Date.now }
 });
 
