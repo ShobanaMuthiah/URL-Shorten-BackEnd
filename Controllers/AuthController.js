@@ -17,7 +17,7 @@ export const register = async (req, res) => {
   await new Token({ userId: user._id, token }).save();
   
 
-  const link = `${process.env.CLIENT_URL}/api/auth/activate/${token}`;
+  const link = `${process.env.CLIENT_URL}/activate/${token}`;
   await sendEmail(user.email, 'Account Activation', `Click the link to activate your account: ${link}`);
 
   res.status(201).send('Registration successful, please check your email to activate your account.');
@@ -77,7 +77,7 @@ export const login = async (req, res) => {
       });
       await resetToken.save();
   
-      const resetLink = `${process.env.CLIENT_URL}/api/auth/reset-password/${token}`;
+      const resetLink = `${process.env.CLIENT_URL}/reset-password/${token}`;
       await sendEmail(user.email, 'Password Reset', `Click the link to reset your password: ${resetLink}`);
   
       res.status(200).json({message:'Password reset link has been sent to your email.'});
