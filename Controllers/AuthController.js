@@ -71,9 +71,7 @@ export const login = async (req, res) => {
       }
   
       const token = nanoid(20);
-      await  updateOne.Token({
-        userId: user._id},
-       { token:token});
+      await  Token.updateOne({userId: user._id},{ token:token});
       await user.save();
   
       const resetLink = `${process.env.CLIENT_URL}/reset-password/${token}`;
