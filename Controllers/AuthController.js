@@ -111,7 +111,7 @@ export const login = async (req, res) => {
   
 
      const hashpassword = await bcrypt.hash(password, 10);
-      await User.updateOne({token},{password:hashpassword})
+      await User.updateOne({_id:resetToken._id},{password:hashpassword})
       await user.save();
   
   
