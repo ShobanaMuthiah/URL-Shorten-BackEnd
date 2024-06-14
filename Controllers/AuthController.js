@@ -30,7 +30,8 @@ export const activateAccount = async (req, res) => {
   const user = await User.findById(decoded.id);
   if (!user) return res.status(400).json({message:'Invalid token.'});
 
-  user.isActive = true;
+  // user.isActive = true;
+  await User.updateOne({_id:user._id},{isActive:true})
   await user.save();
   
   res.status(200).json({message:'Account activated successfully.'});
