@@ -60,17 +60,22 @@ export const login = async (req, res) => {
       res.status(500).json({message:'Server error.'});
     }
   };
-
   export const forgotPassword = async (req, res) => {
     const { email } = req.body;
   
     try {
       const user = await User.findOne({ email });
       if (!user) {
-        return res.status(400).json({message:'User not found.'});
+        return res.status(400).json({ message: 'User not found.' });
       }
   
+      // Generate a new token
       const token = nanoid(20);
+  
+      // Check if there's an existing token and remove it
+      await Token.deleteOne({ userId: user._id });
+  
+      // Save the new token
       const resetToken = new Token({
         userId: user._id,
         token,
@@ -80,36 +85,36 @@ export const login = async (req, res) => {
       const resetLink = `${process.env.CLIENT_URL}/reset-password/${token}`;
       await sendEmail(user.email, 'Password Reset', `Click the link to reset your password: ${resetLink}`);
   
-      res.status(200).json({message:'Password reset link has been sent to your email.'});
+      res.status(200).json({ message: 'Password reset link has been sent to your email.' });
     } catch (err) {
-      res.status(500).json({message:'Server error.'});
+      res.status(500).json({ message: 'Server error.' });
     }
   };
+  
 
   export const resetPassword = async (req, res) => {
-    const { token } = req.params;
-    const { password } = req.body;
-  
-    try {
-      const resetToken = await Token.findOne({ token });
-      if (!resetToken) {
-        return res.status(400).json({message:'Invalid or expired token.'});
-      }
-  
-      const user = await User.findById(resetToken.userId);
-      if (!user) {
-        return res.status(400).json({message:'User not found.'});
-      }
-  
+  const { token } = req.params;
+  const { password } = req.body;
 
-     const hashpassword = await bcrypt.hash(password, 10);
-      await User.updateOne({token},{password:hashpassword})
-      await user.save();
-  
-      await User.deleteOne({token})
-  
-      res.status(200).json({message:'Password has been reset successfully.'});
-    } catch (err) {
-      res.status(500).json({message:'Server error.'});
+  try {
+    const resetToken = await Token.findOne({ token });
+    if (!resetToken) {
+      return res.status(400).json({ message: 'Invalid or expired token.' });
     }
-  };
+
+    const user = await User.findById(resetToken.userId);
+    if (!user) {
+      return res.status(400).json({ message: 'User not found.' });
+    }
+
+    const hashpassword = await bcrypt.hash(password, 10);
+    user.password = hashpassword;
+    await user.save();
+
+    await Token.deleteOne({ token });
+
+    res.status(200).json({ message: 'Password has been reset successfully.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
