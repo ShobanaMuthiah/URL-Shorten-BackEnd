@@ -1,4 +1,4 @@
-import URL from '../Models/Url.js';
+import URL from '../Models/URL.js';
 import { startOfDay, startOfMonth } from 'date-fns';
 import dotenv from 'dotenv';
 dotenv.config()
