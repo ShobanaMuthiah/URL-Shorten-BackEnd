@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import URL from '../Models/Url.js';
+import URL from '../Models/URL.js';
 import dotenv from 'dotenv';
 import express from 'express';
 dotenv.config();
