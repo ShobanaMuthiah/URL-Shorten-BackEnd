@@ -29,10 +29,10 @@ export const createShortURL = async (req, res) => {
         const shortUrl = await generateShortUrl();  // Ensure the function is awaited
         const url = new URL({ originalUrl, shortUrl, createdBy: req.user.id });
         await url.save();
-        res.status(201).send({ shortUrl });
+        res.status(200).json({ shortUrl:shortUrl });
     } catch (err) {
         console.error(err);  // Log the error for debugging
-        res.status(500).send('Server error');
+        res.status(500).json({message:'Server error'});
     }
 };
 
@@ -40,7 +40,7 @@ export const redirectURL = async (req, res) => {
     const { shortUrl } = req.params;
     try {
         const url = await URL.findOne({ shortUrl });
-        if (!url) return res.status(404).send('URL not found.');
+        if (!url) return res.status(404).json({message:'URL not found.'});
 
         url.clickCount++;
         await url.save();
@@ -48,6 +48,6 @@ export const redirectURL = async (req, res) => {
         res.redirect(url.originalUrl);
     } catch (err) {
         console.error(err);  // Log the error for debugging
-        res.status(500).send('Server error');
+        res.status(500).json({message:'Server error'});
     }
 };

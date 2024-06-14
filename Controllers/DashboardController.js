@@ -15,12 +15,12 @@ export const getDashboardData = async (req, res) => {
     // Get top 10 URLs with most clicks
     const topUrls = await URL.find().sort({ clickCount: -1 }).limit(10);
 
-    res.json({
+    res.status(200).json({
       urlsToday,
       urlsThisMonth,
       topUrls,
     });
   } catch (err) {
-    res.status(500).send('Server error.');
+    res.status(500).json({message:'Server error.'});
   }
 };

@@ -20,7 +20,7 @@ export const register = async (req, res) => {
   const link = `${process.env.CLIENT_URL}/activate/${token}`;
   await sendEmail(user.email, 'Account Activation', `Click the link to activate your account: ${link}`);
 
-  res.status(201).send('Registration successful, please check your email to activate your account.');
+  res.status(200).json({message:'Registration successful, please check your email to activate your account.'});
 };
 
 export const activateAccount = async (req, res) => {
@@ -33,7 +33,7 @@ export const activateAccount = async (req, res) => {
   user.isActive = true;
   await user.save();
   
-  res.json({message:'Account activated successfully.'});
+  res.status(200).json({message:'Account activated successfully.'});
 };
 
 export const login = async (req, res) => {
@@ -55,7 +55,7 @@ export const login = async (req, res) => {
       }
   
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-      res.json({ token });
+      res.status(200).json({ token:token });
     } catch (err) {
       res.status(500).json({message:'Server error.'});
     }
@@ -93,15 +93,14 @@ export const login = async (req, res) => {
     try {
       const resetToken = await Token.findOne({ token });
       if (!resetToken) {
-        return res.status(400).send('Invalid or expired token.');
+        return res.status(400).json({message:'Invalid or expired token.'});
       }
   
       const user = await User.findById(resetToken.userId);
       if (!user) {
-        return res.status(400).send('User not found.');
+        return res.status(400).json({message:'User not found.'});
       }
   
-      // const salt = await bcrypt.genSalt(10);
 
      const hashpassword = await bcrypt.hash(password, 10);
       await User.updateOne({token},{password:hashpassword})
@@ -109,8 +108,8 @@ export const login = async (req, res) => {
   
       await User.deleteOne({token})
   
-      res.send('Password has been reset successfully.');
+      res.status(200).json({message:'Password has been reset successfully.'});
     } catch (err) {
-      res.status(500).send('Server error.');
+      res.status(500).json({message:'Server error.'});
     }
   };
