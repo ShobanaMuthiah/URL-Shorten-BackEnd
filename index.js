@@ -5,14 +5,14 @@ import authRoutes from './Routers/Auth.js';
 import urlRoutes from './Routers/Url.js';
 import dashboardRoutes from './Routers/Dashboard.js';
 import { Server } from 'socket.io';
-import https from 'https';
+import http from 'http';
 import connectDB from './Databases/ConnectDB.js';
 import cors from 'cors';
 dotenv.config();
 connectDB();
 
 const app = express();
-const server = https.createServer(app);
+const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: '*',
@@ -22,6 +22,7 @@ const io = new Server(server, {
 });
 app.use(cors({
   origin:'*',
+  methods:['GET','POST'],
   credentials:true
 }));
 app.use(express.json());
