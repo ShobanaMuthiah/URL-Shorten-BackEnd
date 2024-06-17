@@ -21,7 +21,7 @@ const io = new Server(server, {
   },
 });
 app.use(cors({
-  origin:'*',
+  origin:'https://url-shrinker.netlify.app',
   credentials:true
 }));
 app.use(express.json());
