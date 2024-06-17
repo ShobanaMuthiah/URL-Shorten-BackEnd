@@ -15,13 +15,13 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: ['https://url-shrinker.netlify.app','*'],
     methods: ['GET', 'POST'],
     credentials:true
   },
 });
 app.use(cors({
-  origin:'*',
+  origin: ['https://url-shrinker.netlify.app','*'],
   methods:['GET','POST'],
   credentials:true
 }));
