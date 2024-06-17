@@ -8,60 +8,39 @@ import { Server } from 'socket.io';
 import http from 'http';
 import connectDB from './Databases/ConnectDB.js';
 import cors from 'cors';
-
 dotenv.config();
 connectDB();
 
 const app = express();
-
-const allowedOrigins = [
-  'https://url-shrinker.netlify.app',
-  '*' 
-];
-
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: ['https://url-shrinker.netlify.app','*'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST'],
+    credentials:true
   },
-  methods: ['GET', 'POST'],
-  credentials: true
-};
-
-app.use(cors(corsOptions));
+});
+app.use(cors({
+  origin: ['https://url-shrinker.netlify.app','*'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods:['GET','POST'],
+  credentials:true
+}));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/url', urlRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-const server = http.createServer(app);
-
-const io = new Server(server, {
-  cors: {
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    methods: ['GET', 'POST'],
-    credentials: true
-  }
-});
-
 io.on('connection', (socket) => {
-  console.log('A user connected');
+  console.log('a user connected');
   socket.on('disconnect', () => {
-    console.log('User disconnected');
+    console.log('user disconnected');
   });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.port || 5000;
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port`);
 });
