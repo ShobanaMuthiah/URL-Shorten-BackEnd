@@ -18,14 +18,16 @@ const io = new Server(server, {
     origin: ['https://url-shrinker.netlify.app','*'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET', 'POST'],
-    credentials:true
+    credentials:true,
+    optionsSuccessStatus: 200 
   },
 });
 app.use(cors({
   origin: ['https://url-shrinker.netlify.app','*'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   methods:['GET','POST'],
-  credentials:true
+  credentials:true,
+  optionsSuccessStatus: 200 
 }));
 app.use(express.json());
 
